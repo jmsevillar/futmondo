@@ -4,118 +4,230 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clasificación Comunidades Futmondo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f3faf6; color: #234236; }
+        /* ESTILOS NATIVOS ESTABLES (Sin dependencias de internet) */
+        body { 
+            background-color: #f3faf6; 
+            color: #234236; 
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 24px; margin: 0; font-weight: bold; }
+        p { color: #557064; font-size: 14px; margin: 5px 0 0; }
+        
+        .status-badge {
+            background: #e2f1e8; 
+            color: #198754; 
+            font-size: 12px; 
+            font-weight: bold; 
+            padding: 4px 8px; 
+            border-radius: 7px;
+        }
+
+        /* TARJETAS CONTENEDORAS */
+        section {
+            background: #ffffff;
+            border: 1px solid #cfe8da;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .badge-sync {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: #e2f1e8;
+            color: #198754;
+        }
+
+        /* DISEÑO DE FILA HORIZONTAL DE 4 COLUMNAS FLUIDAS */
+        .tabla-contenedor {
+            display: flex;
+            flex-direction: column;
+        }
+        .fila-usuario {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e1eee6;
+        }
+        .fila-usuario:last-child {
+            border-bottom: none;
+        }
+
+        /* REPARTO EXACTO DE COLUMNAS SIMÉTRICAS */
+        .col-posicion {
+            width: 12%;
+            text-align: left;
+        }
+        .col-nombre {
+            width: 48%;
+            text-align: left;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .col-puntos {
+            width: 18%;
+            text-align: right;
+            font-weight: bold;
+        }
+        .col-valor {
+            width: 22%;
+            text-align: right;
+            color: #6b8177;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* DISEÑO DE LOS BADGES DE POSICIÓN */
+        .pos-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 8px;
+            background: #f1f5f3;
+            color: #557064;
+        }
     </style>
 </head>
-<body class="p-5 font-sans min-h-screen">
+<body>
 
-    <div class="w-full max-w-[600px] mx-auto">
+    <div class="container">
         
         <!-- CABECERA DE LA APP -->
-        <header class="mb-5 flex items-start justify-between gap-4">
-            <div class="min-w-0">
-                <h1 class="text-2xl font-bold text-[#234236] m-0 tracking-tight">🏆 Panel de Divisiones</h1>
-                <p class="text-[#557064] text-sm mt-1 m-0 font-medium" id="fecha-actualizacion">Cargando jornada actual...</p>
+        <header>
+            <div>
+                <h1>🏆 Panel de Divisiones</h1>
+                <p id="fecha-actualizacion">Actualizando jornada...</p>
             </div>
-            <div class="flex flex-col items-end flex-shrink-0">
-                <span class="text-[13px] text-[#557064] mb-0.5 font-semibold uppercase tracking-wider">Estado</span>
-                <div class="flex items-center gap-1 font-bold text-xs bg-[#e2f1e8] text-[#198754] px-2 py-1 rounded-[7px]">
-                    🟢 Activo
-                </div>
+            <div>
+                <span class="status-badge">🟢 Producción Activa</span>
             </div>
         </header>
 
         <!-- ================= SECCIÓN: PRIMERA DIVISIÓN ================= -->
-        <section class="bg-white border border-[#cfe8da] rounded-[16px] p-[18px] mb-4 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-[#234236] m-0 flex items-center gap-2">
-                    <span class="text-[#22a06b]">⭐</span> Primera División
-                </h2>
-                <span id="estado-l1" class="text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]">Sincronizando</span>
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">⭐ Primera División</h2>
+                <span id="estado-l1" class="badge-sync">Al día</span>
             </div>
-            
-            <div id="tabla-primera" class="divide-y divide-[#e1eee6]">
-                <div class="py-6 text-center text-sm text-[#6b8177]">Buscando datos de Primera...</div>
+            <div id="tabla-primera" class="tabla-contenedor">
+                <div style="padding: 24px 0; text-align: center; color: #6b8177; font-size: 14px;">Cargando datos...</div>
             </div>
         </section>
 
         <!-- ================= SECCIÓN: SEGUNDA DIVISIÓN ================= -->
-        <section class="bg-white border border-[#cfe8da] rounded-[16px] p-[18px] mb-4 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-[#234236] m-0 flex items-center gap-2">
-                    <span class="text-[#6b8177]">🏃‍♂️</span> Segunda División
-                </h2>
-                <span id="estado-l2" class="text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]">Sincronizando</span>
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">🏃‍♂️ Segunda División</h2>
+                <span id="estado-l2" class="badge-sync">Al día</span>
             </div>
-            
-            <div id="tabla-segunda" class="divide-y divide-[#e1eee6]">
-                <div class="py-6 text-center text-sm text-[#6b8177]">Buscando datos de Segunda...</div>
+            <div id="tabla-segunda" class="tabla-contenedor">
+                <div style="padding: 24px 0; text-align: center; color: #6b8177; font-size: 14px;">Cargando datos...</div>
             </div>
         </section>
 
     </div>
 
     <script>
-        // CONFIGURACIÓN DE LOS DOS USUARIOS
-        const usuarioPrimera = 'manager_primera'; // <-- Cambiarás este por el real de Primera División
-        const usuarioSegunda = 't_sevi';          // <-- t_sevi asignado correctamente a Segunda División
+        // CONFIGURACIÓN DE LOS DOS ARCHIVOS REQUERIDOS EN TU REPOSITORIO
+        const archivoPrimera = 'clasificacion_t_sevi_2026-11-09.json'; 
+        const archivoSegunda = 'clasificacion_t_sevi_2026-11-09.json';          
 
-        // Fecha actual en formato estándar YYYY-MM-DD
-        const hoy = new Date();
-        const año = hoy.getFullYear();
-        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-        const dia = String(hoy.getDate()).padStart(2, '0');
-        const fechaFormateada = `${año}-${mes}-${dia}`;
+        const fechaActualizacion = document.getElementById('fecha-actualizacion');
 
-        document.getElementById('fecha-actualizacion').textContent = `Jornada del ${hoy.toLocaleDateString('es-ES', { dateStyle: 'long' })}`;
-
-        const archivoPrimera = `clasificacion_${usuarioPrimera}_${fechaFormateada}.json`;
-        const archivoSegunda = `clasificacion_${usuarioSegunda}_${fechaFormateada}.json`;
-
-        async function procesarYRenderizar(urlArchivo, idContenedor, idEstado) {
+        async function procesarYRenderizar(urlArchivo, idContenedor, idEstado, esPrimera) {
             const contenedor = document.getElementById(idContenedor);
             const badgeEstado = document.getElementById(idEstado);
             
             try {
-                const respuesta = await fetch(urlArchivo);
+                const respuesta = await fetch('./' + urlArchivo);
                 if (!respuesta.ok) throw new Error('No encontrado');
                 
                 const data = await respuesta.json();
                 
-                badgeEstado.className = "text-xs font-bold bg-[#e2f1e8] text-[#198754] px-2 py-0.5 rounded-[8px]";
+                const fechaFichero = new Date(data.fecha_captura);
+                fechaActualizacion.textContent = `Último reporte: ${fechaFichero.toLocaleDateString('es-ES', { dateStyle: 'long' })} a las ${fechaFichero.toLocaleTimeString('es-ES', { timeStyle: 'short' })}`;
+                
+                badgeEstado.className = "badge-sync";
                 badgeEstado.textContent = "Al día";
                 contenedor.innerHTML = '';
 
                 data.datos.forEach(eq => {
-                    // Formateador numérico limpio con puntos para los millares y millones (ej: 238.283.436) sin signo de moneda
-                    const valorFormateado = new Intl.NumberFormat('es-ES', { 
-                        maximumFractionDigits: 0 
-                    }).format(eq.valorEquipo);
+                    const numeroLimpio = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 }).format(eq.valorEquipo);
+                    const valorConEuro = `${numeroLimpio} €`;
 
-                    // Redondeo explícito a un solo decimal para los puntos (ej: 751.1)
                     const puntosRedondeados = Number(eq.puntos).toFixed(1);
+                    const nombreClub = eq.nombreEquipo || "Equipo Futmondo";
 
                     const item = document.createElement('div');
-                    item.className = "flex justify-between items-center gap-3 py-3 border-b border-[#e1eee6] last:border-b-0";
+                    item.className = "fila-usuario";
 
-                    let estiloPosicion = "inline-flex items-center justify-center w-[26px] h-[26px] min-w-[26px] font-bold text-sm rounded-[8px] bg-[#f1f5f3] text-[#557064]";
-                    if (eq.posicion === 1) {
-                        estiloPosicion = "inline-flex items-center justify-center w-[26px] h-[26px] min-w-[26px] font-bold text-sm rounded-[8px] bg-[#e2f1e8] text-[#198754]";
+                    // ASIGNACIÓN DE COLORES NATIVOS EXCLUSIVOS SEGÚN TUS CONDICIONES
+                    let estiloInline = "background-color: #f1f5f3; color: #557064;"; // Gris por defecto
+                    
+                    if (esPrimera) {
+                        if (eq.posicion === 1) {
+                            estiloInline = "background-color: #198754; color: #ffffff;"; // 1º Primera: Verde fuerte
+                        } else if (eq.posicion === 4) {
+                            estiloInline = "background-color: #fef3c7; color: #d97706;"; // 4º Primera: Naranja Playoff
+                        } else if (eq.posicion === 5 || eq.posicion === 6 || eq.posicion === 7) {
+                            estiloInline = "background-color: #fde8e8; color: #dc2626;"; // 5,6,7 Primera: Rojo Descenso
+                        }
+                    } else {
+                        if (eq.posicion === 1 || eq.posicion === 2 || eq.posicion === 3) {
+                            estiloInline = "background-color: #e0f2fe; color: #0369a1;"; // 1,2,3 Segunda: Azul Ascenso
+                        } else if (eq.posicion === 4) {
+                            estiloInline = "background-color: #fef3c7; color: #d97706;"; // 4º Segunda: Naranja Playoff
+                        }
                     }
 
-                    // Renderizado en una única línea limpia por usuario con manager, puntos y valor de mercado
+                    // Inyección en las 4 columnas estables y alineadas horizontalmente
                     item.innerHTML = `
-                        <div class="flex items-center gap-3 min-w-0 flex-1">
-                            <span class="${estiloPosicion}">${eq.posicion}</span>
-                            <div class="min-w-0">
-                                <span class="font-semibold text-[#234236] block truncate text-base leading-tight">${eq.usuario}</span>
-                            </div>
+                        <div class="col-posicion">
+                            <span class="pos-number" style="${estiloInline}">
+                                ${eq.posicion}
+                            </span>
                         </div>
-                        <div class="flex flex-col items-end flex-shrink-0 text-right">
-                            <strong class="text-base text-[#234236] font-bold leading-tight">${puntosRedondeados} pts</strong>
-                            <span class="text-[12px] text-[#6b8177] mt-0.5 font-medium">${valorFormateado}</span>
+                        <div class="col-nombre">
+                            <span>${nombreClub}</span>
+                        </div>
+                        <div class="col-puntos">
+                            <span>${puntosRedondeados}</span>
+                        </div>
+                        <div class="col-valor">
+                            <span>${valorConEuro}</span>
                         </div>
                     `;
                     contenedor.appendChild(item);
@@ -123,18 +235,20 @@
 
             } catch (error) {
                 console.error(error);
-                badgeEstado.className = "text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]";
+                badgeEstado.style.backgroundColor = "#fde8e8";
+                badgeEstado.style.color = "#dc2626";
                 badgeEstado.textContent = "Pendiente";
                 contenedor.innerHTML = `
-                    <div class="py-6 text-center text-sm text-[#557064]/70">
-                        No se ha publicado la captura de hoy (<code class="bg-[#f1f5f3] text-xs px-1 py-0.5 rounded font-mono">${urlArchivo}</code>).
+                    <div style="padding: 24px 0; text-align: center; color: #557064; font-size: 14px;">
+                        No se ha podido leer el archivo <code style="background: #f1f5f3; padding: 2px 4px; border-radius: 4px; color: #198754; font-family: monospace;">${urlArchivo}</code>.
                     </div>
                 `;
             }
         }
 
-        procesarYRenderizar(archivoPrimera, 'tabla-primera', 'estado-l1');
-        procesarYRenderizar(archivoSegunda, 'tabla-segunda', 'estado-l2');
+        // Ejecución forzando la lógica cromática simétrica
+        procesarYRenderizar(archivoPrimera, 'tabla-primera', 'estado-l1', true);
+        procesarYRenderizar(archivoSegunda, 'tabla-segunda', 'estado-l2', false);
     </script>
 </body>
 </html>

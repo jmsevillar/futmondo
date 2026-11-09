@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clasificación Comunidades Futmondo</title>
-    <script src="https://tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f3faf6; color: #234236; }
     </style>
@@ -89,11 +89,13 @@
                 contenedor.innerHTML = '';
 
                 data.datos.forEach(eq => {
-                    const valorMoneda = new Intl.NumberFormat('es-ES', { 
-                        style: 'currency', 
-                        currency: 'EUR', 
+                    // Formateador numérico limpio con puntos para los millares y millones (ej: 238.283.436) sin signo de moneda
+                    const valorFormateado = new Intl.NumberFormat('es-ES', { 
                         maximumFractionDigits: 0 
                     }).format(eq.valorEquipo);
+
+                    // Redondeo explícito a un solo decimal para los puntos (ej: 751.1)
+                    const puntosRedondeados = Number(eq.puntos).toFixed(1);
 
                     const item = document.createElement('div');
                     item.className = "flex justify-between items-center gap-3 py-3 border-b border-[#e1eee6] last:border-b-0";
@@ -103,17 +105,17 @@
                         estiloPosicion = "inline-flex items-center justify-center w-[26px] h-[26px] min-w-[26px] font-bold text-sm rounded-[8px] bg-[#e2f1e8] text-[#198754]";
                     }
 
+                    // Renderizado en una única línea limpia por usuario con manager, puntos y valor de mercado
                     item.innerHTML = `
                         <div class="flex items-center gap-3 min-w-0 flex-1">
                             <span class="${estiloPosicion}">${eq.posicion}</span>
                             <div class="min-w-0">
                                 <span class="font-semibold text-[#234236] block truncate text-base leading-tight">${eq.usuario}</span>
-                                <span class="text-[13px] text-[#6b8177] block truncate mt-0.5">${eq.nombreEquipo}</span>
                             </div>
                         </div>
                         <div class="flex flex-col items-end flex-shrink-0 text-right">
-                            <strong class="text-base text-[#234236] font-bold leading-tight">${eq.puntos} pts</strong>
-                            <span class="text-[12px] text-[#6b8177] mt-0.5 font-medium">${valorMoneda}</span>
+                            <strong class="text-base text-[#234236] font-bold leading-tight">${puntosRedondeados} pts</strong>
+                            <span class="text-[12px] text-[#6b8177] mt-0.5 font-medium">${valorFormateado}</span>
                         </div>
                     `;
                     contenedor.appendChild(item);

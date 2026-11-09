@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificación Histórica Futmondo</title>
+    <!-- Tailwind CSS para diseño moderno -->
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <header class="mb-6 text-center">
+            <h1 class="text-4xl font-extrabold text-indigo-600 mb-2">🏆 Histórico Liga Futmondo</h1>
+            <p class="text-gray-500 font-medium" id="fecha-actualizacion">Selecciona una fecha para comenzar</p>
+        </header>
+
+        <!-- Panel de Control: Selector de Fecha -->
+        <div class="bg-white p-4 shadow-md rounded-xl mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-gray-200">
+            <div class="flex items-center gap-3">
+                <label for="selector-fecha" class="font-bold text-gray-700">Ver clasificación del día:</label>
+                <input type="date" id="selector-fecha" class="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div id="estado-carga" class="text-sm font-semibold text-gray-500"></div>
+        </div>
+
+        <!-- Contenedor de la Tabla -->
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr class="bg-indigo-600 text-white text-left text-sm uppercase font-semibold tracking-wider">
+                        <th class="px-6 py-4 text-center w-20">Pos</th>
+                        <th class="px-6 py-4">Equipo</th>
+                        <th class="px-6 py-4">Manager</th>
+                        <th class="px-6 py-4 text-right">Puntos</th>
+                        <th class="px-6 py-4 text-right">Valor de Equipo</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-cuerpo" class="divide-y divide-gray-200 bg-white">
+                    <tr>
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-400 font-medium">
+                            Por favor, selecciona una fecha en el calendario superior.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Configuración inicial fija
+        const usuario = 't_sevi'; 
+        const selector = document.getElementById('selector-fecha');
+        const estadoCarga = document.getElementById('estado-carga');
+        const fechaActualizacion = document.getElementById('fecha-actualizacion');
+        const tbody = document.getElementById('tabla-cuerpo');
+
+        // Establecer el día de hoy por defecto en el calendario al cargar la página
+        const hoy = new Date();
+        const hoyFormateado = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+        selector.value = hoyFormateado;
+
+        // Función principal para buscar y cargar el archivo JSON del día elegido
+        async function buscarYLimpiarTabla(fechaSeleccionada) {
+            // Construimos el nombre exacto basado en el input (YYYY-MM-DD)
+            const nombreArchivo = `clasificacion_${usuario}_${fechaSeleccionada}.json`;
+            
+            estadoCarga.innerHTML = '<span class="text-indigo-500 animate-pulse">Buscando archivo...</span>';
+            
+            try {
+                const respuesta = await fetch(nombreArchivo);
+                
+                if (!respuesta.ok) {
+                    throw new Error(`No hay registros para el día ${fechaSeleccionada}`);
+                }
+                
+                const data = await respuesta.json();
+                
+                // Formateamos la fecha interna del JSON de forma elegante
+                const fechaLegible = new Date(data.fecha_captura).toLocaleString('es-ES', {
+                    dateStyle: 'long',
+                    timeStyle: 'short'
+                });
+                
+                fechaActualizacion.textContent = `Datos del reporte: ${fechaLegible}`;
+                estadoCarga.innerHTML = '<span class="text-green-500">✔ Cargado</span>';
+                
+                // Limpiamos la tabla antes de rellenar
+                tbody.innerHTML = ''; 
+
+                // Pintamos las filas con tus datos estructurados
+                data.datos.forEach(eq => {
+                    const fila = document.createElement('tr');
+                    fila.className = 'hover:bg-indigo-50/50 transition-colors';
+                    
+                    const valorFormateado = new Intl.NumberFormat('es-ES', { 
+                        style: 'currency', 
+                        currency: 'EUR', 
+                        maximumFractionDigits: 0 
+                    }).format(eq.valorEquipo);
+
+                    // Estilo visual del podio
+                    let posEstilo = 'text-gray-600';
+                    if (eq.posicion === 1) posEstilo = 'text-amber-500 font-black text-xl';
+                    if (eq.posicion === 2) posEstilo = 'text-slate-400 font-black text-lg';
+                    if (eq.posicion === 3) posEstilo = 'text-amber-700 font-black text-lg';
+
+                    fila.innerHTML = `
+                        <td class="px-6 py-4 text-center font-bold ${posEstilo}">${eq.posicion}</td>
+                        <td class="px-6 py-4 font-semibold text-gray-900">${eq.nombreEquipo}</td>
+                        <td class="px-6 py-4 text-gray-500">${eq.usuario}</td>
+                        <td class="px-6 py-4 text-right font-bold text-indigo-600 text-lg">${eq.puntos}</td>
+                        <td class="px-6 py-4 text-right font-medium text-gray-600">${valorFormateado}</td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+
+            } catch (error) {
+                console.error(error);
+                fechaActualizacion.textContent = 'Reporte no disponible';
+                estadoCarga.innerHTML = '<span class="text-red-500">❌ Archivo no encontrado</span>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-10 text-center text-red-400 font-medium">
+                            No se encontró el archivo de datos <code class="bg-red-50 px-2 py-1 rounded text-xs text-red-600">${nombreArchivo}</code> para esa fecha.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Listener: Cada vez que el usuario cambie la fecha en el calendario, se dispara la búsqueda
+        selector.addEventListener('change', (e) => {
+            buscarYLimpiarTabla(e.target.value);
+        });
+
+        // Intentar cargar el día de hoy automáticamente al abrir la página por primera vez
+        buscarYLimpiarTabla(hoyFormateado);
+    </script>
+</body>
+</html>

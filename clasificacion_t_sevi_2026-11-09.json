@@ -1,0 +1,55 @@
+{
+  "usuario_sesion": "t_sevi",
+  "fecha_captura": "2026-11-09T11:25:02.287Z",
+  "datos": [
+    {
+      "posicion": 1,
+      "nombreEquipo": "t_sevi",
+      "usuario": "Sin usuario",
+      "puntos": 828.6,
+      "valorEquipo": 516267733
+    },
+    {
+      "posicion": 2,
+      "nombreEquipo": "IES Jose Marin",
+      "usuario": "Sin usuario",
+      "puntos": 751.1,
+      "valorEquipo": 432985957
+    },
+    {
+      "posicion": 3,
+      "nombreEquipo": "Picolo",
+      "usuario": "Sin usuario",
+      "puntos": 732.3000000000002,
+      "valorEquipo": 404640901
+    },
+    {
+      "posicion": 4,
+      "nombreEquipo": "Domingo Galera García",
+      "usuario": "Sin usuario",
+      "puntos": 696.9999999999998,
+      "valorEquipo": 222772573
+    },
+    {
+      "posicion": 5,
+      "nombreEquipo": "Manu Carlón",
+      "usuario": "Sin usuario",
+      "puntos": 678.4999999999999,
+      "valorEquipo": 238283436
+    },
+    {
+      "posicion": 6,
+      "nombreEquipo": "javi8103",
+      "usuario": "Sin usuario",
+      "puntos": 656.1999999999999,
+      "valorEquipo": 290735896
+    },
+    {
+      "posicion": 7,
+      "nombreEquipo": "pedrocafermat",
+      "usuario": "Sin usuario",
+      "puntos": 603.7,
+      "valorEquipo": 282254921
+    }
+  ]
+}

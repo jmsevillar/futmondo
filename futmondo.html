@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificación Comunidades Futmondo</title>
+    <script src="https://tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3faf6; color: #234236; }
+    </style>
+</head>
+<body class="p-5 font-sans min-h-screen">
+
+    <div class="w-full max-w-[600px] mx-auto">
+        
+        <!-- CABECERA DE LA APP -->
+        <header class="mb-5 flex items-start justify-between gap-4">
+            <div class="min-w-0">
+                <h1 class="text-2xl font-bold text-[#234236] m-0 tracking-tight">🏆 Panel de Divisiones</h1>
+                <p class="text-[#557064] text-sm mt-1 m-0 font-medium" id="fecha-actualizacion">Cargando jornada actual...</p>
+            </div>
+            <div class="flex flex-col items-end flex-shrink-0">
+                <span class="text-[13px] text-[#557064] mb-0.5 font-semibold uppercase tracking-wider">Estado</span>
+                <div class="flex items-center gap-1 font-bold text-xs bg-[#e2f1e8] text-[#198754] px-2 py-1 rounded-[7px]">
+                    🟢 Activo
+                </div>
+            </div>
+        </header>
+
+        <!-- ================= SECCIÓN: PRIMERA DIVISIÓN ================= -->
+        <section class="bg-white border border-[#cfe8da] rounded-[16px] p-[18px] mb-4 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-[#234236] m-0 flex items-center gap-2">
+                    <span class="text-[#22a06b]">⭐</span> Primera División
+                </h2>
+                <span id="estado-l1" class="text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]">Sincronizando</span>
+            </div>
+            
+            <div id="tabla-primera" class="divide-y divide-[#e1eee6]">
+                <div class="py-6 text-center text-sm text-[#6b8177]">Buscando datos de Primera...</div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN: SEGUNDA DIVISIÓN ================= -->
+        <section class="bg-white border border-[#cfe8da] rounded-[16px] p-[18px] mb-4 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-[#234236] m-0 flex items-center gap-2">
+                    <span class="text-[#6b8177]">🏃‍♂️</span> Segunda División
+                </h2>
+                <span id="estado-l2" class="text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]">Sincronizando</span>
+            </div>
+            
+            <div id="tabla-segunda" class="divide-y divide-[#e1eee6]">
+                <div class="py-6 text-center text-sm text-[#6b8177]">Buscando datos de Segunda...</div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE LOS DOS USUARIOS
+        const usuarioPrimera = 'manager_primera'; // <-- Cambiarás este por el real de Primera División
+        const usuarioSegunda = 't_sevi';          // <-- t_sevi asignado correctamente a Segunda División
+
+        // Fecha actual en formato estándar YYYY-MM-DD
+        const hoy = new Date();
+        const año = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoy.getDate()).padStart(2, '0');
+        const fechaFormateada = `${año}-${mes}-${dia}`;
+
+        document.getElementById('fecha-actualizacion').textContent = `Jornada del ${hoy.toLocaleDateString('es-ES', { dateStyle: 'long' })}`;
+
+        const archivoPrimera = `clasificacion_${usuarioPrimera}_${fechaFormateada}.json`;
+        const archivoSegunda = `clasificacion_${usuarioSegunda}_${fechaFormateada}.json`;
+
+        async function procesarYRenderizar(urlArchivo, idContenedor, idEstado) {
+            const contenedor = document.getElementById(idContenedor);
+            const badgeEstado = document.getElementById(idEstado);
+            
+            try {
+                const respuesta = await fetch(urlArchivo);
+                if (!respuesta.ok) throw new Error('No encontrado');
+                
+                const data = await respuesta.json();
+                
+                badgeEstado.className = "text-xs font-bold bg-[#e2f1e8] text-[#198754] px-2 py-0.5 rounded-[8px]";
+                badgeEstado.textContent = "Al día";
+                contenedor.innerHTML = '';
+
+                data.datos.forEach(eq => {
+                    const valorMoneda = new Intl.NumberFormat('es-ES', { 
+                        style: 'currency', 
+                        currency: 'EUR', 
+                        maximumFractionDigits: 0 
+                    }).format(eq.valorEquipo);
+
+                    const item = document.createElement('div');
+                    item.className = "flex justify-between items-center gap-3 py-3 border-b border-[#e1eee6] last:border-b-0";
+
+                    let estiloPosicion = "inline-flex items-center justify-center w-[26px] h-[26px] min-w-[26px] font-bold text-sm rounded-[8px] bg-[#f1f5f3] text-[#557064]";
+                    if (eq.posicion === 1) {
+                        estiloPosicion = "inline-flex items-center justify-center w-[26px] h-[26px] min-w-[26px] font-bold text-sm rounded-[8px] bg-[#e2f1e8] text-[#198754]";
+                    }
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <span class="${estiloPosicion}">${eq.posicion}</span>
+                            <div class="min-w-0">
+                                <span class="font-semibold text-[#234236] block truncate text-base leading-tight">${eq.usuario}</span>
+                                <span class="text-[13px] text-[#6b8177] block truncate mt-0.5">${eq.nombreEquipo}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end flex-shrink-0 text-right">
+                            <strong class="text-base text-[#234236] font-bold leading-tight">${eq.puntos} pts</strong>
+                            <span class="text-[12px] text-[#6b8177] mt-0.5 font-medium">${valorMoneda}</span>
+                        </div>
+                    `;
+                    contenedor.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error(error);
+                badgeEstado.className = "text-xs font-bold bg-[#f1f5f3] text-[#557064] border border-[#dce8e1] px-2 py-0.5 rounded-[8px]";
+                badgeEstado.textContent = "Pendiente";
+                contenedor.innerHTML = `
+                    <div class="py-6 text-center text-sm text-[#557064]/70">
+                        No se ha publicado la captura de hoy (<code class="bg-[#f1f5f3] text-xs px-1 py-0.5 rounded font-mono">${urlArchivo}</code>).
+                    </div>
+                `;
+            }
+        }
+
+        procesarYRenderizar(archivoPrimera, 'tabla-primera', 'estado-l1');
+        procesarYRenderizar(archivoSegunda, 'tabla-segunda', 'estado-l2');
+    </script>
+</body>
+</html>
